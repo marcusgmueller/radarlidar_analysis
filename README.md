@@ -14,6 +14,10 @@ analysis = RadarLidarWindSpeed(dateBegin, dateEnd)
 ```
 analysis.importDataset()
 ```
-### get height profile
+### height profile
 ```
 result = analysis.getHeightProfile()
+```
+### calculate differn
+```
+analysis.calculateDifferences()
