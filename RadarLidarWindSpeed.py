@@ -42,9 +42,9 @@ class RadarLidarWindSpeed:
         knn.fit(targetHeightDf)
         radarMatchIndex = knn.kneighbors(heightGridDf, return_distance=False)
         return radarMatchIndex
-    def mergeTime(self,targetTimeList):
+    def mergeTime(self,targetTimeList,gridTime):
         gridTimeSeries = []
-        for entry in self.hours:
+        for entry in gridTime:
             gridTimeSeries.append(datetime.timestamp(entry))
         gridDf = pd.DataFrame({'time': gridTimeSeries})  
         #Target Grid
@@ -79,7 +79,7 @@ class RadarLidarWindSpeed:
                 speed = speed.T
                 speedDelta = speedDelta.T
             matchHeightIndex = self.mergeHeight(height)
-            matchTimeIndex = self.mergeTime(time)
+            matchTimeIndex = self.mergeTime(time,dailyHourList)
             for nHour in range(len(dailyHourList)):
                 for i in range(len(self.heightGrid)):
                     iMatch = matchHeightIndex[i]
@@ -112,20 +112,12 @@ class RadarLidarWindSpeed:
                     diff = radarValue - lidarValue
                     self.dataframe.loc[(hour,height),'speedDifference'] = diff
     def getHeightProfile(self):
-        dailyHourList = []
-        for hour in self.hours:
-            if hour.strftime("%Y") == day.strftime("%Y"):
-                if hour.strftime("%m") == day.strftime("%m"):
-                    if hour.strftime("%d") == day.strftime("%d"):
-                        dailyHourList.append(hour)
         result = pd.DataFrame()
         for height in self.heightGrid:
-            radarSum = 0
             lidarSum = 0
+            radarSum = 0
             bothSum = 0
-            counter = 0
-            for hour in dailyHourList:
-                counter += 1
+            for hour in self.hours:
                 radarValue = self.dataframe.loc[(hour,height),'speedRadar']
                 lidarValue = self.dataframe.loc[(hour,height),'speedLidar']
                 if not math.isnan(radarValue):
@@ -134,11 +126,11 @@ class RadarLidarWindSpeed:
                     lidarSum += 1
                 if not math.isnan(radarValue) and not math.isnan(lidarValue):
                     bothSum +=1
-            radarPercentage = radarSum/counter*100
-            lidarPercentage = lidarSum/counter*100
-            bothPercentage = bothSum/counter*100
-            totalPercentage = (radarSum+lidarSum-bothSum)/counter*100
-            entry = [(height, radarPercentage, lidarPercentage, totalPercentage)]
+            radarCoverage = radarSum/len(self.hours)*100
+            lidarCoverage = lidarSum/len(self.hours)*100
+            #bothSum = bothSum/len(self.hours)*100
+            totalCoverage = (radarSum+lidarSum-bothSum)/len(self.hours)*100
+            entry = [(height, radarCoverage, lidarCoverage, totalCoverage)]
             result = result.append(entry, ignore_index=True)
         result = result.rename(columns={0: "height", 1: "radar Coverage", 2: "lidar Coverage", 3: "total Coverage"})
         result = result.set_index(['height'])
