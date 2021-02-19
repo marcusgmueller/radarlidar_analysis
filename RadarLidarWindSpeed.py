@@ -135,6 +135,35 @@ class RadarLidarWindSpeed:
         result = result.rename(columns={0: "height", 1: "radar Coverage", 2: "lidar Coverage", 3: "total Coverage"})
         result = result.set_index(['height'])
         return result
+    def getCoverageHeightTimeSeries(self):
+        result = pd.DataFrame()
+        for day in self.days:
+            allHeights = 0
+            for height in self.heightGrid:
+                lidarSum = 0
+                radarSum = 0
+                bothSum = 0
+                counter = 0
+                for hour in self.hours:
+                    if hour.strftime("%Y") == day.strftime("%Y"):
+                        if hour.strftime("%m") == day.strftime("%m"):
+                            if hour.strftime("%d") == day.strftime("%d"):
+                                counter += 1
+                                radarValue = self.dataframe.loc[(hour,height),'speedRadar']
+                                lidarValue = self.dataframe.loc[(hour,height),'speedLidar']
+                                if not math.isnan(radarValue):
+                                    radarSum += 1
+                                if not math.isnan(lidarValue):
+                                    lidarSum += 1
+                                if not math.isnan(radarValue) and not math.isnan(lidarValue):
+                                    bothSum +=1
+                radarCoverage = radarSum/counter*100
+                lidarCoverage = lidarSum/counter*100
+                totalCoverage = (radarSum+lidarSum-bothSum)/counter*100
+                entry = [(height, day, radarCoverage, lidarCoverage, totalCoverage)]
+                result = result.append(entry, ignore_index=True)
+        result = result.rename(columns={0: "height",1: "day", 2: "radar Coverage", 3: "lidar Coverage", 4: "total Coverage"})
+        return result  
 
 
 
