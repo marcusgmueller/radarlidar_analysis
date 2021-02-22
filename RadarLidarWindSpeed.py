@@ -18,7 +18,7 @@ class RadarLidarWindSpeed:
     dateEnd = datetime.timestamp(datetime.now())
     days = []
     hours = []
-    heightGrid = list(range(0,15000,50))#range(0,15012,36)
+    heightGrid = list(range(0,16200,36))#range(0,15012,36)
     dataframe = pd.DataFrame()
    # index = pd.MultiIndex.from_tuples([], names=["Time", "Height"])
    # dataframe = pd.DataFrame([[],[],[],[]], columns=[ "speedRadar","speedRadarDelta", "LidarValue"])
