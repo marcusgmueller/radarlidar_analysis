@@ -33,7 +33,7 @@ class RadarLidarWindSpeed:
             for height in self.heightGrid:
                 entry = [(hour, height)]
                 self.dataframe = self.dataframe.append(entry, ignore_index=True)
-        self.dataframe = self.dataframe.rename(columns={0: "time", 1: "height", 2: "speedRadar", 3: "speedDeltaRadar", 4: "speedLidar", 5: "sppedDeltaLidar", 6: "speedDifference"})
+        self.dataframe = self.dataframe.rename(columns={0: "time", 1: "height", 2: "speedRadar", 3: "speedDeltaRadar", 4: "speedLidar", 5: "sppedDeltaLidar", 6: "speedDifference", 7: "Fusion", 8: "availability"})
         self.dataframe = self.dataframe.set_index(['time', 'height'])
     def mergeHeight(self,targetHeightList):
         heightGridDf = pd.DataFrame({'height': self.heightGrid})
@@ -164,6 +164,37 @@ class RadarLidarWindSpeed:
                 result = result.append(entry, ignore_index=True)
         result = result.rename(columns={0: "height",1: "day", 2: "radar Coverage", 3: "lidar Coverage", 4: "total Coverage"})
         return result  
+    def calculateFusion(self):
+        for hour in self.hours:
+            for height in self.heightGrid:
+                radarValue = self.dataframe.loc[(hour,height),'speedRadar']
+                lidarValue = self.dataframe.loc[(hour,height),'speedLidar']
+                radarDelta = self.dataframe.loc[(hour,height),'speedDeltaRadar']
+                lidarDelta = self.dataframe.loc[(hour,height),'speedDeltaLidar']
+                if not math.isnan(radarValue) and not math.isnan(lidarValue) and not math.isnan(radarDelta) and not math.isnan(lidarDelta):
+                    fusion = (radarValue*radarDelta+lidarValue*lidarDelta)/(radarDelta+lidarDelta)
+                    self.dataframe.loc[(hour,height),'Fusion'] = fusion
+                elif math.isnan(radarValue) and not math.isnan(lidarValue):
+                    self.dataframe.loc[(hour,height),'Fusion'] = lidarValue
+                elif math.isnan(lidarValue) and not math.isnan(radarValue):
+                    self.dataframe.loc[(hour,height),'Fusion'] = radarValue
+    def calculateAvailability(self):
+        # no data = 0
+        # only radar = 1
+        # only lidar = 2
+        # both = 3
+        for hour in self.hours:
+            for height in self.heightGrid:
+                radarValue = self.dataframe.loc[(hour,height),'speedRadar']
+                lidarValue = self.dataframe.loc[(hour,height),'speedLidar']
+                if not math.isnan(radarValue) and not math.isnan(lidarValue):
+                    self.dataframe.loc[(hour,height),'availability'] = 3
+                elif math.isnan(radarValue) and not math.isnan(lidarValue):
+                    self.dataframe.loc[(hour,height),'availability'] = 2
+                elif math.isnan(lidarValue) and not math.isnan(radarValue):
+                    self.dataframe.loc[(hour,height),'availability'] = 1
+                else:
+                    self.dataframe.loc[(hour,height),'availability'] = 0                    
 
 
 
