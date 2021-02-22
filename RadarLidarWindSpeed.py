@@ -194,7 +194,12 @@ class RadarLidarWindSpeed:
                 elif math.isnan(lidarValue) and not math.isnan(radarValue):
                     self.dataframe.loc[(hour,height),'availability'] = 1
                 else:
-                    self.dataframe.loc[(hour,height),'availability'] = 0                    
+                    self.dataframe.loc[(hour,height),'availability'] = 0
+    def exportNCDF(self, path):
+        x_array = self.dataframe.to_xarray()
+        x_array.to_netcdf(path=path)
+
+
 
 
 
