@@ -18,6 +18,19 @@ analysis.importDataset()
 ```
 result = analysis.getHeightProfile()
 ```
-### calculate differn
+### calculate differences
 ```
 analysis.calculateDifferences()
+```
+### Coverage Height Time Series
+```
+analysis.getCoverageHeightTimeSeries()
+```
+### Radar Lidar Fusion
+```
+analysis.calculateFusion()
+```
+### Data Availability
+```
+analysis.calculateAvailability()
+```
