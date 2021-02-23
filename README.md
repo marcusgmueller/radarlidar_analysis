@@ -34,3 +34,7 @@ analysis.calculateFusion()
 ```
 analysis.calculateAvailability()
 ```
+### NetCDF export
+```
+analysis.exportNCDF("test.nc")
+
