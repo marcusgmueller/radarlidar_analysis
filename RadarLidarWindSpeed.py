@@ -27,6 +27,8 @@ class RadarLidarWindSpeed:
         self.dateEnd = end
         self.hours = np.arange(begin, end, timedelta(hours=0.5)).astype(datetime)
         self.days = np.arange(begin, end, timedelta(days=1)).astype(datetime)
+        self.hours = np.append(self.hours, end)
+        self.days = np.append(self.days, self.dateEnd)
         self.createDataframe()
     def createDataframe(self):
         for hour in self.hours:
@@ -34,6 +36,13 @@ class RadarLidarWindSpeed:
                 entry = [(hour, height)]
                 self.dataframe = self.dataframe.append(entry, ignore_index=True)
         self.dataframe = self.dataframe.rename(columns={0: "time", 1: "height", 2: "speedRadar", 3: "speedDeltaRadar", 4: "speedLidar", 5: "sppedDeltaLidar", 6: "speedDifference", 7: "Fusion", 8: "availability"})
+        self.dataframe["speedRadar"] = np.nan
+        self.dataframe["speedLidar"] = np.nan
+        self.dataframe["speedDeltaRadar"] = np.nan
+        self.dataframe["sppedDeltaLidar"] = np.nan
+        self.dataframe["speedDifference"] = np.nan
+        self.dataframe["Fusion"] = np.nan
+        self.dataframe["availability"] = np.nan
         self.dataframe = self.dataframe.set_index(['time', 'height'])
     def mergeHeight(self,targetHeightList):
         heightGridDf = pd.DataFrame({'height': self.heightGrid})
