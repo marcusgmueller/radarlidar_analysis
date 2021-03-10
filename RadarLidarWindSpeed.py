@@ -35,7 +35,7 @@ class RadarLidarWindSpeed:
             for height in self.heightGrid:
                 entry = [(hour, height)]
                 self.dataframe = self.dataframe.append(entry, ignore_index=True)
-        self.dataframe = self.dataframe.rename(columns={0: "time", 1: "height", 2: "speedRadar", 3: "speedDeltaRadar", 4: "speedLidar", 5: "sppedDeltaLidar", 6: "speedDifference", 7: "Fusion", 8: "availability"})
+        self.dataframe = self.dataframe.rename(columns={0: "time", 1: "height", 2: "speedRadar", 3: "speedDeltaRadar", 4: "speedLidar", 5: "sppedDeltaLidar", 6: "speedDifference", 7: "Fusion", 8: "availability", 9: "missingRadarFile", 10: "missingLidarFile", })
         self.dataframe["speedRadar"] = np.nan
         self.dataframe["speedLidar"] = np.nan
         self.dataframe["speedDeltaRadar"] = np.nan
@@ -104,7 +104,9 @@ class RadarLidarWindSpeed:
             for nHour in range(len(dailyHourList)):
                 for i in range(len(self.heightGrid)):
                     if radar == True:
-                        self.dataframe.loc[(dailyHourList[nHour],self.heightGrid[i]),'availability'] = 4
+                        self.dataframe.loc[(dailyHourList[nHour],self.heightGrid[i]),'missingRadarFile'] = True
+                    else:
+                        self.dataframe.loc[(dailyHourList[nHour],self.heightGrid[i]),'missingLidarFile'] = True
     def importDataset(self):
         for day in self.days:
             dailyHourList = []
@@ -197,7 +199,6 @@ class RadarLidarWindSpeed:
         # only radar = 1
         # only lidar = 2
         # both = 3
-        # no file available = 4
         for hour in self.hours:
             for height in self.heightGrid:
                 radarValue = self.dataframe.loc[(hour,height),'speedRadar']
