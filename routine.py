@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import numpy as np
 from RadarLidarWindSpeed import RadarLidarWindSpeed
+import matplotlib.dates as mdates
 
 
 #-----please edit here-----#
@@ -12,8 +13,10 @@ from RadarLidarWindSpeed import RadarLidarWindSpeed
 plotFilePath = "plots/"
 #--------------------------#
 
-dateEnd = datetime.now()
-dateBegin = datetime.now() - timedelta(days=1)
+
+now = datetime.now()
+dateEnd = datetime(now.year, now.month, now.day,23,59)
+dateBegin = datetime(now.year, now.month, now.day)
 
 #run analysis
 analysis = RadarLidarWindSpeed(dateBegin, dateEnd)
@@ -54,7 +57,7 @@ availability = df.pivot(index="height", columns="time", values="availability")
 X,Y = np.meshgrid(analysis.hours, analysis.heightGrid)
 fig, axes = plt.subplots(nrows=5, ncols=1, figsize=(10, 10), sharex=True, sharey=False)
 
-fig.suptitle("data overview "+dateBegin.strftime("%Y-%m-%d")+" to "+dateEnd.strftime("%Y-%m-%d"), fontsize=16)
+fig.suptitle("data overview "+dateBegin.strftime("%Y-%m-%d"), fontsize=16)
 # Radar
 axes[0].set_title("Radar ")
 im = axes[0].pcolor(X,Y,radar,cmap='viridis', vmin=0, vmax=32)
@@ -99,6 +102,11 @@ cbar2 = fig.colorbar(im2, cax=cb_ax2, ticks=[0,1,2,3])
 cbar2.set_ticks([0,1,2,3])
 cbar2.set_ticklabels(["no data", "only Radar", "only Lidar","both"])
 cbar2.set_label('data availability')
+
+xformatter = mdates.DateFormatter('%H:%M')
+plt.gcf().axes[4].xaxis.set_major_formatter(xformatter)
+
+
 plt.savefig(plotFilePath+"merge_"+str(dateBegin.strftime("%Y%m%d"))+".png",dpi=300)
 
 

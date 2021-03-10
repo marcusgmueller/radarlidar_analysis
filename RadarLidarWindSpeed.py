@@ -59,7 +59,7 @@ class RadarLidarWindSpeed:
         #Target Grid
         targetTimestampList = []
         for entry in targetTimeList:
-            stamp = (entry-2440587.5)*86400
+            stamp = (entry-2440587.5)*86400-60*60
             targetTimestampList.append(stamp)
         targetDf = pd.DataFrame({'time': targetTimestampList})
         #KNN
