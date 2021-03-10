@@ -100,6 +100,11 @@ class RadarLidarWindSpeed:
                         else:
                             self.dataframe.loc[(dailyHourList[nHour],self.heightGrid[i]),'speedLidar'] = speed[iMatch,nMatch]
                             self.dataframe.loc[(dailyHourList[nHour],self.heightGrid[i]),'speedDeltaLidar'] = speedDelta[iMatch,nMatch]
+        else:
+            for nHour in range(len(dailyHourList)):
+                for i in range(len(self.heightGrid)):
+                    if radar == True:
+                        self.dataframe.loc[(dailyHourList[nHour],self.heightGrid[i]),'availability'] = 4
     def importDataset(self):
         for day in self.days:
             dailyHourList = []
@@ -192,6 +197,7 @@ class RadarLidarWindSpeed:
         # only radar = 1
         # only lidar = 2
         # both = 3
+        # no file available = 4
         for hour in self.hours:
             for height in self.heightGrid:
                 radarValue = self.dataframe.loc[(hour,height),'speedRadar']
