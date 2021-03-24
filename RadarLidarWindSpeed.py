@@ -18,17 +18,20 @@ class RadarLidarWindSpeed:
     dateEnd = datetime.timestamp(datetime.now())
     days = []
     hours = []
-    heightGrid = list(range(0,16200,36))#range(0,15012,36)
+    heightGrid = []#range(0,15012,36)
     dataframe = pd.DataFrame()
+    variable = ""
    # index = pd.MultiIndex.from_tuples([], names=["Time", "Height"])
    # dataframe = pd.DataFrame([[],[],[],[]], columns=[ "speedRadar","speedRadarDelta", "LidarValue"])
-    def __init__(self, begin, end):
+    def __init__(self, begin, end, grid=list(range(0,13000,26)),variable="speed"):
+        self.variable = variable
         self.dateBegin = begin
         self.dateEnd = end
         self.hours = np.arange(begin, end, timedelta(hours=0.5)).astype(datetime)
         self.days = np.arange(begin, end, timedelta(days=1)).astype(datetime)
         self.hours = np.append(self.hours, end)
         self.days = np.append(self.days, self.dateEnd)
+        self.heightGrid = grid
         self.createDataframe()
     def createDataframe(self):
         for hour in self.hours:
@@ -43,6 +46,8 @@ class RadarLidarWindSpeed:
         self.dataframe["speedDifference"] = np.nan
         self.dataframe["Fusion"] = np.nan
         self.dataframe["availability"] = np.nan
+        self.dataframe["missingRadarFile"] = np.nan
+        self.dataframe["missingLidarFile"] = np.nan
         self.dataframe = self.dataframe.set_index(['time', 'height'])
     def mergeHeight(self,targetHeightList):
         heightGridDf = pd.DataFrame({'height': self.heightGrid})
@@ -79,9 +84,9 @@ class RadarLidarWindSpeed:
         if os.path.exists(path):
             dataset = Dataset(path, mode='r')
             height = dataset.variables['height'][:]
-            speed = dataset.variables['speed'][:]
+            speed = dataset.variables[self.variable][:]
             speed = speed.filled(np.nan)
-            speedDelta = dataset.variables['delta_speed'][:]
+            speedDelta = dataset.variables['delta_'+self.variable][:]
             speedDelta = speedDelta.filled(np.nan)
             time = dataset.variables['time'][:]
             if radar == True:
@@ -167,6 +172,8 @@ class RadarLidarWindSpeed:
                                 counter += 1
                                 radarValue = self.dataframe.loc[(hour,height),'speedRadar']
                                 lidarValue = self.dataframe.loc[(hour,height),'speedLidar']
+                                missingRadarFile = self.dataframe.loc[(hour,height),'missingRadarFile']
+                                missingLidarFile = self.dataframe.loc[(hour,height),'missingLidarFile']
                                 if not math.isnan(radarValue):
                                     radarSum += 1
                                 if not math.isnan(lidarValue):
@@ -175,6 +182,10 @@ class RadarLidarWindSpeed:
                                     bothSum +=1
                 radarCoverage = radarSum/counter*100
                 lidarCoverage = lidarSum/counter*100
+                if missingLidarFile == True:
+                    lidarCoverage = np.nan
+                if missingRadarFile == True:
+                    radarCoverage = np.nan
                 totalCoverage = (radarSum+lidarSum-bothSum)/counter*100
                 entry = [(height, day, radarCoverage, lidarCoverage, totalCoverage)]
                 result = result.append(entry, ignore_index=True)
