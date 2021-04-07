@@ -36,11 +36,11 @@ class RadarLidarWindSpeed:
             for height in self.heightGrid:
                 entry = [(hour, height)]
                 self.dataframe = self.dataframe.append(entry, ignore_index=True)
-        self.dataframe = self.dataframe.rename(columns={0: "time", 1: "height", 2: "speedRadar", 3: "speedDeltaRadar", 4: "speedLidar", 5: "sppedDeltaLidar", 6: "speedDifference", 7: "speedFusion", 8: "directionRadar", 9: "directionDeltaRadar", 10: "directionLidar", 11: "directionDeltaLidar", 12: "directionDifference", 13: "directionFusion", 14: "availability", 15: "missingRadarFile", 16: "missingLidarFile", })
+        self.dataframe = self.dataframe.rename(columns={0: "time", 1: "height", 2: "speedRadar", 3: "speedDeltaRadar", 4: "speedLidar", 5: "speedDeltaLidar", 6: "speedDifference", 7: "speedFusion", 8: "directionRadar", 9: "directionDeltaRadar", 10: "directionLidar", 11: "directionDeltaLidar", 12: "directionDifference", 13: "directionFusion", 14: "availability", 15: "missingRadarFile", 16: "missingLidarFile", })
         self.dataframe["speedRadar"] = np.nan
         self.dataframe["speedLidar"] = np.nan
         self.dataframe["speedDeltaRadar"] = np.nan
-        self.dataframe["sppedDeltaLidar"] = np.nan
+        self.dataframe["speedDeltaLidar"] = np.nan
         self.dataframe["speedDifference"] = np.nan
         self.dataframe["speedFusion"] = np.nan
         self.dataframe["directionRadar"] = np.nan
