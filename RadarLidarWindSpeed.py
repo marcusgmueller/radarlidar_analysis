@@ -304,7 +304,7 @@ class RadarLidarWindSpeed:
                     self.dataframe.loc[(hour,height),'availability'] = 0
     def exportNCDF(self, plotFilePath):
         x_array = self.dataframe.to_xarray()
-        path = plotFilePath+str(self.dateBegin.strftime("%Y/%m/%d/"))+'netcdf'+str(self.dateBegin.strftime("%Y%m%d"))+".nc"
+        path = plotFilePath+'netcdf'+str(self.dateBegin.strftime("%Y%m%d"))+".nc"
         x_array.to_netcdf(path=path)
     def windspeedFullHeightCoveragePlot(self, plotFilePath):
         result = self.getSpeedHeightProfile()
@@ -319,7 +319,7 @@ class RadarLidarWindSpeed:
         plt.ylabel("height [m]", fontsize=16)
         plt.legend(fontsize=16)
         plt.title('data coverage by height: '+self.dateBegin.strftime("%Y-%m-%d"), fontsize=16)
-        plt.savefig(plotFilePath+str(self.dateBegin.strftime("%Y/%m/%d/"))+"coverageHeightPlot_fullheight_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150)
+        plt.savefig(plotFilePath+"coverageHeightPlot_fullheight_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150)
     def windspeedFullHeightOverviewPlot(self, plotFilePath):    
         df = self.dataframe.copy(deep=True)
         df.reset_index(level=0, inplace=True)
@@ -380,7 +380,7 @@ class RadarLidarWindSpeed:
         plt.gcf().axes[2].xaxis.set_major_formatter(xformatter)
 
         #fig.subplots_adjust(wspace=0.05, hspace=0.4, right=0.4)
-        plt.savefig(plotFilePath+str(self.dateBegin.strftime("%Y/%m/%d/"))+"merge_windspeed_fullheight_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
+        plt.savefig(plotFilePath+"merge_windspeed_fullheight_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
     def windspeedBoundaryLayerCoveragePlot(self, plotFilePath):
         result = self.getSpeedHeightProfile()
         plt.figure(figsize=(20,10))
@@ -395,7 +395,7 @@ class RadarLidarWindSpeed:
         plt.ylabel("height [m]", fontsize=16)
         plt.legend(fontsize=16)
         plt.title('data coverage by height: '+self.dateBegin.strftime("%Y-%m-%d"), fontsize=16)
-        plt.savefig(plotFilePath+str(self.dateBegin.strftime("%Y/%m/%d/"))+"coverageHeightPlot_boundarylayer_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
+        plt.savefig(plotFilePath+"coverageHeightPlot_boundarylayer_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
     def windspeedBoundaryLayerOverviewPlot(self, plotFilePath):
         #plot data overview
         df = self.dataframe.copy(deep=True)
@@ -459,7 +459,7 @@ class RadarLidarWindSpeed:
         plt.gcf().axes[2].xaxis.set_major_formatter(xformatter)
 
         #fig.subplots_adjust(wspace=0.05, hspace=0.4, right=0.4)
-        plt.savefig(plotFilePath+str(self.dateBegin.strftime("%Y/%m/%d/"))+"merge_windspeed_boundarylayer_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
+        plt.savefig(plotFilePath+"merge_windspeed_boundarylayer_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
         plt.close()
         #plt.show()
     def winddirectionFullHeightOverviewPlot(self, plotFilePath):
@@ -520,7 +520,7 @@ class RadarLidarWindSpeed:
         xformatter = mdates.DateFormatter('%H:%M')
         plt.gcf().axes[2].xaxis.set_major_formatter(xformatter)
 
-        plt.savefig(plotFilePath+str(self.dateBegin.strftime("%Y/%m/%d/"))+"merge_winddirection_fullheight_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
+        plt.savefig(plotFilePath+"merge_winddirection_fullheight_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
     def winddirectionBoundaryLayerOverviewPlot(self, plotFilePath):
         df = self.dataframe.copy(deep=True)
         df.reset_index(level=0, inplace=True)
@@ -583,8 +583,81 @@ class RadarLidarWindSpeed:
         plt.gcf().axes[2].xaxis.set_major_formatter(xformatter)
 
         #fig.subplots_adjust(wspace=0.05, hspace=0.4, right=0.4)
-        plt.savefig(plotFilePath+str(self.dateBegin.strftime("%Y/%m/%d/"))+"merge_winddirection_boundarylayer_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
+        plt.savefig(plotFilePath+"merge_winddirection_boundarylayer_"+str(self.dateBegin.strftime("%Y%m%d"))+".png",dpi=150,bbox_inches='tight')
+    def availabilityPlot(self, plotFilePath):
+        result = self.getCoverageHeightTimeSeries()
+        X,Y = np.meshgrid(self.days, self.heightGrid)
+        radarCoverage = result.pivot(index="height", columns="day", values="radar Coverage")#.to_numpy()
+        lidarCoverage = result.pivot(index="height", columns="day", values="lidar Coverage")#.to_numpy()
+        totalCoverage = result.pivot(index="height", columns="day", values="total Coverage")#.to_numpy()
+        timelineTotal = []
+        timelineRadar = []
+        timelineLidar = []
+
+        for day in self.days:
+            timelineTotal.append(totalCoverage[day].mean())
+            timelineLidar.append(lidarCoverage[day].mean())
+            timelineRadar.append(radarCoverage[day].mean())
+        fig, axes = plt.subplots(nrows=4, ncols=1, figsize=(10, 10), sharex=True, sharey=False)
+        #fig.suptitle("September 2020", fontsize=16)
 
 
+        days_extende = np.arange(self.dateBegin, self.dateEnd+timedelta(days=1), timedelta(days=1)).astype(datetime)
 
+        axes[0].set_title("coverage by radar")
+        #axes[0].axis([0, 24, 0, maxHeight])
+        im = axes[0].pcolor(X,Y,radarCoverage,cmap='viridis',vmin=0,vmax=100)
+        axes[0].set_ylabel("height AGL [m]")
+
+        axes[1].set_title("coverage by lidar")
+        #axes[0].axis([0, 24, 0, maxHeight])
+        im = axes[1].pcolor(X,Y,lidarCoverage,cmap='viridis',vmin=0,vmax=100)
+        axes[1].set_ylabel("height AGL [m]")
+
+        axes[2].set_title("total coverage by height")
+        #axes[0].axis([0, 24, 0, maxHeight])
+        im = axes[2].pcolor(X,Y,totalCoverage,cmap='viridis',vmin=0,vmax=100)
+        axes[2].set_ylabel("height AGL [m]")
+
+
+        axes[3].set_title("total coverage ")
+        im2 = axes[3].plot(self.days,timelineTotal, label="Total")
+        im2 = axes[3].plot(self.days,timelineRadar, label="Radar")
+        im2 = axes[3].plot(self.days,timelineLidar, label="Lidar")
+        axes[3].set_ylabel("total daily coverage by measurements [%]")
+        axes[3].set_xlabel("date UTC")
+
+
+        cb_ax = fig.add_axes([1, 0.1, 0.02, 0.8])
+        cbar = fig.colorbar(im, cax=cb_ax)
+        cbar.set_label('daily coverage by measurements [%]')
+        axes[3].legend()
+        axes[3].tick_params(axis='x', rotation=45)
+        plt.savefig(plotFilePath+"availability"+str(self.dateBegin.strftime("%Y%m"))+".png",dpi=150,bbox_inches='tight')
+    def histogramDifferencePlot(self, plotFilePath):
+        minHeight = 0
+        maxHeight = 15000
+        diffs = self.dataframe['speedDifference'].tolist()
+        diffs = [x for x in diffs if str(x) != 'nan']
+        array = np.array(diffs)
+        np.clip(array,-20,20,out=array)
+        mu = array.mean()
+        median = np.median(array)
+        sigma = np.std(array)
+        textstr = '\n'.join((
+            r'$\mu=%.2f$' % (mu, ),
+            r'$\mathrm{median}=%.2f$' % (median, ),
+            r'$\sigma=%.2f$' % (sigma, )))
+        fig, ax = plt.subplots(figsize=(10, 5))
+
+        plt.title("Deviations histogram: "+self.dateBegin.strftime("%Y-%m-%d")+" - "+self.dateEnd.strftime("%Y-%m-%d")+", "+str(minHeight)+"m - "+str(maxHeight)+"m")
+        plt.xlabel("Deviation: Radar - Lidar [m/s]")
+        plt.ylabel("frequency")
+        ax.hist(diffs, range=[-20,20],bins=100)
+
+        # place a text box in upper left in axes coords
+        props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+        ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
+
+        plt.savefig(plotFilePath+'_histogram_'+str(minHeight)+'_'+str(maxHeight)+'.png')
 

@@ -4,8 +4,9 @@ import sys
 import datetime
 import glob
 import os
+import matplotlib 
+matplotlib.use('Agg') 
 from pathlib import Path
-from plot_routine import plotRoutine
 from RadarLidarWindSpeed import RadarLidarWindSpeed
 
 
@@ -21,6 +22,7 @@ for dd in range(days_range[0], days_range[1]):
     end = datetime.datetime(now.year, now.month, now.day,23,59)-datetime.timedelta(days=dd)
     begin = datetime.datetime(now.year, now.month, now.day)-datetime.timedelta(days=dd)
     Path(storagePath+begin.strftime("%Y/%m/%d/")).mkdir(parents=True, exist_ok=True)
+    storagePath = storagePath+begin.strftime("%Y/%m/%d/")
     #plotRoutine(storagePath,begin, end)
 
     #new approach
