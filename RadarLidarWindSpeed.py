@@ -303,7 +303,20 @@ class RadarLidarWindSpeed:
                 else:
                     self.dataframe.loc[(hour,height),'availability'] = 0
     def exportNCDF(self, plotFilePath):
+        now = datetime.now()
         x_array = self.dataframe.to_xarray()
+        x_array.attrs["Title"] = "radar and lidar wind speed fusion data"
+        x_array.attrs["Institution"] = "University of Cologne, Institute for Geophysics and Meteorology"
+        x_array.attrs["Contact_person"] = "Marcus Mueller, marcus.mueller@uni-koeln.de"
+        x_array.attrs["Source"] = ""
+        x_array.attrs["History"] = ""
+        x_array.attrs["Dependencies"] = ""
+        x_array.attrs["Conventions"] = ""
+        x_array.attrs["Processing_date"] = now.strftime("%Y-%m-%d, %H:%M:%S")
+        x_array.attrs["Author"] = "Marcus Mueller, marcus.mueller@uni-koeln.de"
+        x_array.attrs["Comments"] = "processing code on: https://github.com/marcusgmueller/radarlidar_analysis"
+        x_array.attrs["Licence"] = "For non-commercial use only."
+        x_array.attrs["Measurement_site"] = "JOYCE Juelich Observatory for Cloud Evolution"
         path = plotFilePath+'netcdf'+str(self.dateBegin.strftime("%Y%m%d"))+".nc"
         x_array.to_netcdf(path=path)
     def windspeedFullHeightCoveragePlot(self, plotFilePath):
