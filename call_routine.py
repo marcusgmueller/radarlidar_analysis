@@ -12,7 +12,7 @@ from RadarLidarWindSpeed import RadarLidarWindSpeed
 
 ################# change here! #################
 
-days_range = (0, 1)#change back to 2
+days_range = (0, 2)
 storagePath = "/work/marcus_mueller/routine/"
 
 ################################################
@@ -22,7 +22,7 @@ for dd in range(days_range[0], days_range[1]):
     end = datetime.datetime(now.year, now.month, now.day,23,59)-datetime.timedelta(days=dd)
     begin = datetime.datetime(now.year, now.month, now.day)-datetime.timedelta(days=dd)
     Path(storagePath+begin.strftime("%Y/%m/%d/")).mkdir(parents=True, exist_ok=True)
-    storagePath = storagePath+begin.strftime("%Y/%m/%d/")
+    newStoragePath = storagePath+begin.strftime("%Y/%m/%d/")
     #plotRoutine(storagePath,begin, end)
 
     #new approach
@@ -32,11 +32,11 @@ for dd in range(days_range[0], days_range[1]):
     analysis.calculateDifferences()
     analysis.calculateDirectionFusion()
     analysis.calculateAvailability()
-    analysis.windspeedFullHeightCoveragePlot(storagePath)
-    analysis.windspeedBoundaryLayerCoveragePlot(storagePath)
-    analysis.windspeedFullHeightOverviewPlot(storagePath)
-    analysis.windspeedBoundaryLayerOverviewPlot(storagePath)
-    analysis.winddirectionFullHeightOverviewPlot(storagePath)
-    analysis.winddirectionBoundaryLayerOverviewPlot(storagePath)
-    analysis.exportNCDF(storagePath)
+    analysis.windspeedFullHeightCoveragePlot(newStoragePath)
+    analysis.windspeedBoundaryLayerCoveragePlot(newStoragePath)
+    analysis.windspeedFullHeightOverviewPlot(newStoragePath)
+    analysis.windspeedBoundaryLayerOverviewPlot(newStoragePath)
+    analysis.winddirectionFullHeightOverviewPlot(newStoragePath)
+    analysis.winddirectionBoundaryLayerOverviewPlot(newStoragePath)
+    analysis.exportNCDF(newStoragePath)
     

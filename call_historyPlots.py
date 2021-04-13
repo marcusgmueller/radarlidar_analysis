@@ -19,7 +19,7 @@ storagePath = "/work/marcus_mueller/history/"
 
 
 start = datetime(2019, 4, 1)
-for i in range(23):
+for i in range(23): # n months from start
     dateBegin=start+relativedelta(months=+i)
     print(dateBegin)
     dateEnd=start+relativedelta(months=+i+1)

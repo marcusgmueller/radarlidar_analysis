@@ -307,9 +307,9 @@ class RadarLidarWindSpeed:
         x_array = self.dataframe.to_xarray()
         x_array.attrs["Title"] = "radar and lidar wind speed fusion data"
         x_array.attrs["Institution"] = "University of Cologne, Institute for Geophysics and Meteorology"
-        x_array.attrs["Contact_person"] = "Marcus Mueller, marcus.mueller@uni-koeln.de"
-        x_array.attrs["Source"] = ""
-        x_array.attrs["History"] = ""
+        x_array.attrs["Contact_person"] = "Bernhard Pospichal, bernhard.pospichal@uni-koeln.de"
+        x_array.attrs["Source"] = "JOYRAD35 Cloud Radar, HALO Photonics Doppler Wind Lidar"
+        x_array.attrs["History"] = "data processed with RadarLidarWindSpeed.py"
         x_array.attrs["Dependencies"] = ""
         x_array.attrs["Conventions"] = ""
         x_array.attrs["Processing_date"] = now.strftime("%Y-%m-%d, %H:%M:%S")
