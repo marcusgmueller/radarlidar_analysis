@@ -15,18 +15,18 @@ The file "RadarLidarWindSpeed.py" contains a class "RadarLidarWindSpeed". This c
 - **getSpeedHeightProfile()** This method calculates a coverage-height-profile for wind speed.
 - **getDirectionHeightProfile()** This method calculates a coverage-height-profile for wind direction.
 - **getCoverageHeightTimeSeries()** This method calculates a coverage-height-timeseries for data coverage.
-- **calculateSpeedFusion()** This methods merges radar and lider data. 
-- calculateDirectionFusion()
-- calculateAvailability()
-- exportNCDF()
-- windspeedFullHeightCoveragePlot()
-- windspeedFullHeightOverviewPlot()
-- windspeedBoundaryLayerCoveragePlot()
-- windspeedBoundaryLayerOverviewPlot()
-- winddirectionFullHeightOverviewPlot()
-- winddirectionBoundaryLayerOverviewPlot()
-- availabilityPlot()
-- histogramDifferencePlot()
+- **calculateSpeedFusion()** This methods merges radar and lider speed data. 
+- **calculateDirectionFusion()** This methods merges radar and lidar direction data.
+- **calculateAvailability()** This methods calculates a value [0,1,2, 3] for data availability.
+- **exportNCDF()** This method exports all data from the datafram into a netcdf file.
+- **windspeedFullHeightCoveragePlot()** This method creates a speed coverage plot for the full height.
+- **windspeedFullHeightOverviewPlot()**  This method creates a speed overview plot for the full height.
+- **windspeedBoundaryLayerCoveragePlot()**  This method creates a speed coverage plot for the boundary layer.
+- **windspeedBoundaryLayerOverviewPlot()** This method creates a speed overview plot for the boundary layer.
+- **winddirectionFullHeightOverviewPlot()** This method creates a direction overview plot for the full height.
+- **winddirectionBoundaryLayerOverviewPlot()** This method creates a direction overview plot for the boundary layer.
+- **availabilityPlot()** This method creats an availability plot.
+- **histogramDifferencePlot()** This method creates a histogram of the differences.
 
 Class for processing Radar/Lidar data
 ### call_routine.py create Quicklook plots for current and last day
