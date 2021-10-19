@@ -28,6 +28,19 @@ The file "RadarLidarWindSpeed.py" contains a class "RadarLidarWindSpeed". This c
 - **availabilityPlot()** This method creats an availability plot.
 - **histogramDifferencePlot()** This method creates a histogram of the differences.
 
-Class for processing Radar/Lidar data
-### call_routine.py create Quicklook plots for current and last day
+In addition to this class two files are provided to run routines automaticly:
+### call_routine.py 
+This code creates Quicklook plots for current and last day. It can be started by
+
+`python3 call_routine.py`
+
+The file can be modified in the following way. With the line
+
+`days_range = (0, 2)`
+
+the number of days, for which quicklooks are created, is selected. In this case, quicklooks are created for the current and the previous day. With the line 
+
+`storagePath = "/work/marcus_mueller/routine/"`
+
+the storage path can be changed. The software automaticly creates a folder structure based on the date under this path.
 ### call_historyPlot.py create statistical plots on data availability
