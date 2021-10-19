@@ -1,6 +1,6 @@
 # radarlidar_analysis
 ## Scientific Background
-## Methods/Annahmen
+## Methods
 This project aims to compine radar and lidar windspeed and direction data into one combined product. Therefor a new height and time grid is defined. The height grid consist of 26 vertical layer from 0m AGL to 13km AGL. The time grid for daily plto has time steps of 0.5h. The raw data from radar and lidar are projected onto this new grid with the NearestNeighbors-Algorith from sklearn.
 ## Code Base
 This project consists of three files:
