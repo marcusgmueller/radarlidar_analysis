@@ -44,3 +44,14 @@ the number of days, for which quicklooks are created, is selected. In this case,
 
 the storage path can be changed. The software automaticly creates a folder structure based on the date under this path.
 ### call_historyPlot.py create statistical plots on data availability
+The fille call_historyPlot.py contains a routine to create availability plots for historic data. It can be started by:
+
+`python3 call_historyPlot.py`
+
+The following changes can made in the code:
+
+`storagePath = "/work/marcus_mueller/history/"` Storage Path for Plots
+
+`start = datetime(2019, 4, 1)` Start date for the plot
+
+`nMonths = 23` number of months to process from start date on
